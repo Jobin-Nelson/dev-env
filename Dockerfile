@@ -39,6 +39,7 @@ RUN cd /root \
   && curl -L https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz -O \
   && tar -xzf nvim-linux64.tar.gz \
   && ln -sf /root/nvim-linux64/bin/nvim /usr/bin/nvim \
+  && echo 'alias tmux="TERM=xterm-256color tmux -u"' >> /root/.bashrc \
   && rm nvim-linux64.tar.gz
 
 RUN git clone --depth 1 https://github.com/AstroNvim/AstroNvim /root/.config/nvim \
