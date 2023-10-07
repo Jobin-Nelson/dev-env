@@ -31,17 +31,26 @@ RUN : \
 
 WORKDIR /code
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
+  && . $HOME/.cargo/env \
+  && rustup component add rust-analyzer
 
-ENV PATH="/root/.cargo/bin:${PATH}"
-
+# Install neovim
 RUN cd /root \
   && curl -L https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz -O \
   && tar -xzf nvim-linux64.tar.gz \
   && ln -sf /root/nvim-linux64/bin/nvim /usr/bin/nvim \
-  && echo 'alias tmux="TERM=xterm-256color tmux -u"' >> /root/.bashrc \
+  && echo 'set -o vi\nalias tmux="TERM=xterm-256color tmux -u"' >> /root/.bashrc \
   && rm nvim-linux64.tar.gz
 
+# Setup AstroNvim
 RUN git clone --depth 1 https://github.com/AstroNvim/AstroNvim /root/.config/nvim \
   && git clone --depth 1 https://github.com/Jobin-Nelson/astronvim_config.git /root/.config/nvim/lua/user \
   && nvim --headless -c 'quitall'
+
+# Environment variables
+ENV PATH="/root/.cargo/bin:${PATH}"
+ENV LANG=C.UTF-8
+
+ENTRYPOINT ["/bin/bash"]
