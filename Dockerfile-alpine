@@ -1,0 +1,19 @@
+FROM alpine:edge
+
+RUN apk add \
+  bash \
+  git \
+  python3 \
+  neovim \
+  ripgrep \
+  alpine-sdk \
+  --update
+
+RUN git clone --depth 1 https://github.com/Jobin-Nelson/lazyvim_config.git ~/.config/nvim \
+  && nvim --headless -c 'quitall'
+
+WORKDIR /code
+
+ENV LANG=C.UTF-8
+ENTRYPOINT ["/bin/bash"]
+
